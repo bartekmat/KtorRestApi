@@ -3,6 +3,7 @@ package com.gruzini
 import io.ktor.application.*
 import io.ktor.features.ContentNegotiation
 import io.ktor.jackson.*
+import io.ktor.request.receive
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.embeddedServer
@@ -14,6 +15,10 @@ fun Application.module() {
     routing {
         get("/") {
             call.respond(User("Bartek", 31))
+        }
+        post("/") {
+            val receivedUser = call.receive<User>()
+            call.respond(receivedUser)
         }
     }
     install(ContentNegotiation) {
