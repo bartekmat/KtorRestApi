@@ -4,7 +4,7 @@ import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 
-data class User(val id: Int? = null, val name: String, val age: Int)
+data class User(val id: Int? = null, val name: String, val age: Int) : Entity
 
 object Users : Table() {
 

@@ -1,9 +1,9 @@
 package com.gruzini.services
 
-import com.gruzini.repositories.UserRepository
 import com.gruzini.models.User
+import com.gruzini.repositories.Repository
 
-class UserService(private val repository: UserRepository) {
+class UserService(private val repository: Repository<User>) {
     fun getAll(): List<User> {
         return repository.fetchAll()
     }
