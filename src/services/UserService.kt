@@ -1,9 +1,15 @@
 package com.gruzini.services
 
 import com.gruzini.models.User
-import com.gruzini.repositories.Repository
+import com.gruzini.repositories.IUserRepository
+import io.ktor.features.*
 
-class UserService(private val repository: Repository<User>) {
+class UserService(private val repository: IUserRepository) {
+
+    fun getById(id: Int): User {
+        return repository.fetch(id)?: throw NotFoundException("User with id = $id not found")
+    }
+
     fun getAll(): List<User> {
         return repository.fetchAll()
     }

@@ -15,11 +15,10 @@ import io.ktor.server.netty.*
 
 
 fun Application.module() {
+    val database = initializeDatabase()
 
-    val repository = UserRepository()
+    val repository = UserRepository(database)
     val userService = UserService(repository)
-
-    initializeDatabase()
 
     install(ContentNegotiation) {
         jackson {
@@ -32,6 +31,12 @@ fun Application.module() {
             get("/") {
                 val users = userService.getAll()
                 call.respond(users)
+            }
+            get("/{id}") {
+                val id = call.parameters["id"]!!.toInt()
+                println(id)
+                val user = userService.getById(id)
+                call.respond(user)
             }
             post("/") {
                 val receivedUser = call.receive<User>()
