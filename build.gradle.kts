@@ -39,6 +39,12 @@ dependencies {
     //use jackson as json
     implementation("io.ktor:ktor-jackson:$ktor_version")
 
+    //use exposed as db
+    implementation("org.jetbrains.exposed", "exposed-core", "0.24.1")
+    implementation("org.jetbrains.exposed", "exposed-jdbc", "0.24.1")
+
+    //h2 in memory db
+    implementation("com.h2database:h2:1.4.199")
 
     //use these test libraries - ktor for server request tests, junit for running tests and assertions
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
