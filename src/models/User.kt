@@ -1,4 +1,4 @@
-package com.gruzini
+package com.gruzini.models
 
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.ResultRow
@@ -15,6 +15,6 @@ object Users : Table() {
     override val primaryKey = PrimaryKey(id, name = "PK_Users_Id")
 
     fun toUser(row: ResultRow): User {
-        return User(row[Users.id], row[Users.name], row[Users.age])
+        return User(row[id], row[name], row[age])
     }
 }
