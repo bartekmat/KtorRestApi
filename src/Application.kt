@@ -3,6 +3,7 @@ package com.gruzini
 import com.gruzini.bootstrap.initializeDatabase
 import com.gruzini.repositories.UserRepository
 import com.gruzini.models.User
+import com.gruzini.repositories.IUserRepository
 import com.gruzini.services.UserService
 import io.ktor.application.*
 import io.ktor.features.*
@@ -13,12 +14,18 @@ import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 
+import org.koin.dsl.module.module
+import org.koin.ktor.ext.inject
+import org.koin.standalone.StandAloneContext
+
+val koinModules = module {
+    val database = initializeDatabase()
+    single<IUserRepository> { UserRepository(database) }
+    single<UserService> { UserService(get()) }
+}
 
 fun Application.module() {
-    val database = initializeDatabase()
-
-    val repository = UserRepository(database)
-    val userService = UserService(repository)
+    StandAloneContext.startKoin(listOf(koinModules))
 
     install(ContentNegotiation) {
         jackson {
@@ -27,22 +34,27 @@ fun Application.module() {
     }
 
     install(Routing) {
-        route("/users") {
-            get("/") {
-                val users = userService.getAll()
-                call.respond(users)
-            }
-            get("/{id}") {
-                val id = call.parameters["id"]!!.toInt()
-                println(id)
-                val user = userService.getById(id)
-                call.respond(user)
-            }
-            post("/") {
-                val receivedUser = call.receive<User>()
-                val savedUser = userService.save(receivedUser)
-                call.respond(savedUser)
-            }
+        val userService: UserService by inject()
+        setEndpoints(userService)
+    }
+}
+
+private fun Routing.setEndpoints(userService: UserService) {
+    route("/users") {
+        get("/") {
+            val users = userService.getAll()
+            call.respond(users)
+        }
+        get("/{id}") {
+            val id = call.parameters["id"]!!.toInt()
+            println(id)
+            val user = userService.getById(id)
+            call.respond(user)
+        }
+        post("/") {
+            val receivedUser = call.receive<User>()
+            val savedUser = userService.save(receivedUser)
+            call.respond(savedUser)
         }
     }
 }
@@ -55,6 +67,7 @@ fun main(args: Array<String>): Unit {
         watchPaths = listOf("com.gruzini")
     ).start(wait = true)
 }
+
 
 
 

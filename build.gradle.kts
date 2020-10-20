@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val logback_version: String by project
 val ktor_version: String by project
 val kotlin_version: String by project
+val koin_version: String by project
 
 plugins {
     application
@@ -45,6 +46,11 @@ dependencies {
 
     //h2 in memory db
     implementation("com.h2database:h2:1.4.199")
+
+    // Koin for Kotlin apps
+    implementation ("org.koin:koin-ktor:$koin_version")
+    // Testing
+    testImplementation ("org.koin:koin-test:$koin_version")
 
     //use these test libraries - ktor for server request tests, junit for running tests and assertions
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
