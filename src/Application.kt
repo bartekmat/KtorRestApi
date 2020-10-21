@@ -50,6 +50,11 @@ private fun Routing.setEndpoints(userService: UserService) {
                 userService.getAll()
             }
         }
+        query("user") {
+            resolver { id: kotlin.Int ->
+                userService.getById(id)
+            }
+        }
     }
     route("/graphql") {
         get("/") {
