@@ -6,6 +6,8 @@ import com.gruzini.models.User
 import com.gruzini.repositories.IUserRepository
 import com.gruzini.repositories.UserRepository
 import com.gruzini.requests.GraphQLRequest
+import com.gruzini.routing.setGraphQLEndpoint
+import com.gruzini.routing.setRESTEndpoints
 import com.gruzini.services.UserService
 import io.ktor.application.*
 import io.ktor.features.*
@@ -36,51 +38,10 @@ fun Application.module() {
 
     install(Routing) {
         val userService: UserService by inject()
-        setEndpoints(userService)
+        setRESTEndpoints(userService)
+        setGraphQLEndpoint(userService)
     }
 }
-
-private fun Routing.setEndpoints(userService: UserService) {
-    val schema = KGraphQL.schema {
-        configure {
-            useDefaultPrettyPrinter = true
-        }
-        query("users") {
-            resolver { ->
-                userService.getAll()
-            }
-        }
-        query("user") {
-            resolver { id: kotlin.Int ->
-                userService.getById(id)
-            }
-        }
-    }
-    route("/graphql") {
-        get("/") {
-            val graphRequest = call.receive<GraphQLRequest>()
-            call.respond(schema.execute(graphRequest.query))
-        }
-    }
-    route("/users") {
-        get("/") {
-            val users = userService.getAll()
-            call.respond(users)
-        }
-        get("/{id}") {
-            val id = call.parameters["id"]!!.toInt()
-            println(id)
-            val user = userService.getById(id)
-            call.respond(user)
-        }
-        post("/") {
-            val receivedUser = call.receive<User>()
-            val savedUser = userService.save(receivedUser)
-            call.respond(savedUser)
-        }
-    }
-}
-
 fun main(args: Array<String>): Unit {
     embeddedServer(
         Netty,
