@@ -1,9 +1,11 @@
 package com.gruzini
 
+import com.apurebase.kgraphql.KGraphQL
 import com.gruzini.bootstrap.initializeDatabase
-import com.gruzini.repositories.UserRepository
 import com.gruzini.models.User
 import com.gruzini.repositories.IUserRepository
+import com.gruzini.repositories.UserRepository
+import com.gruzini.requests.GraphQLRequest
 import com.gruzini.services.UserService
 import io.ktor.application.*
 import io.ktor.features.*
@@ -13,7 +15,6 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-
 import org.koin.dsl.module.module
 import org.koin.ktor.ext.inject
 import org.koin.standalone.StandAloneContext
@@ -40,6 +41,22 @@ fun Application.module() {
 }
 
 private fun Routing.setEndpoints(userService: UserService) {
+    val schema = KGraphQL.schema {
+        configure {
+            useDefaultPrettyPrinter = true
+        }
+        query("users") {
+            resolver { ->
+                userService.getAll()
+            }
+        }
+    }
+    route("/graphql") {
+        get("/") {
+            val graphRequest = call.receive<GraphQLRequest>()
+            call.respond(schema.execute(graphRequest.query))
+        }
+    }
     route("/users") {
         get("/") {
             val users = userService.getAll()

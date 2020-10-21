@@ -5,6 +5,7 @@ val logback_version: String by project
 val ktor_version: String by project
 val kotlin_version: String by project
 val koin_version: String by project
+val KGraphQLVersion: String by project
 
 plugins {
     application
@@ -43,6 +44,9 @@ dependencies {
     //use exposed as db
     implementation("org.jetbrains.exposed", "exposed-core", "0.24.1")
     implementation("org.jetbrains.exposed", "exposed-jdbc", "0.24.1")
+
+    //use Kgraphql for single query endpoints
+    implementation("com.apurebase:kgraphql:$KGraphQLVersion")
 
     //h2 in memory db
     implementation("com.h2database:h2:1.4.199")
