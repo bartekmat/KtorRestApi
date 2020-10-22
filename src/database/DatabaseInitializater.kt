@@ -1,4 +1,4 @@
-package com.gruzini.bootstrap
+package com.gruzini.database
 
 import com.gruzini.models.Users
 import org.jetbrains.exposed.sql.Database
@@ -6,11 +6,7 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 
-
-fun initializeDatabase(): Database {
-    val db = Database.connect("jdbc:h2:mem:regular;DB_CLOSE_DELAY=-1", "org.h2.Driver")
-
-    //this will create table in h2 db
+fun initializeData(db: Database) {
     transaction(db) {
         SchemaUtils.create(Users)
 
@@ -30,5 +26,4 @@ fun initializeDatabase(): Database {
             it[age] = 68
         }
     }
-    return db
 }

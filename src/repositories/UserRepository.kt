@@ -2,10 +2,7 @@ package com.gruzini.repositories
 
 import com.gruzini.models.User
 import com.gruzini.models.Users
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class UserRepository(private val db : Database) : IUserRepository {
@@ -27,8 +24,14 @@ class UserRepository(private val db : Database) : IUserRepository {
         return true
     }
 
-    override fun update(entity: User): Boolean {
-        TODO("Not yet implemented")
+    override fun update(id: Int, entity: User): Boolean {
+        transaction(db) {
+            Users.update({Users.id eq id}){
+                it[Users.name] = entity.name
+                it[Users.age] = entity.age
+            }
+        }
+        return true
     }
 
     override fun delete(id: Int): Boolean {

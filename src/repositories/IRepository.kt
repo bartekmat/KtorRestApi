@@ -6,6 +6,6 @@ interface IRepository<T : Entity> {
     fun fetchAll(): List<T>
     fun fetch(id: Int): T?
     fun create(entity: T): Boolean
-    fun update(entity: T): Boolean
+    fun update(id: Int, entity: T): Boolean
     fun delete(id: Int): Boolean
 }
