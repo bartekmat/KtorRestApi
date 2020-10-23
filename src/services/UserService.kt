@@ -19,7 +19,7 @@ class UserService(private val repository: IUserRepository) {
         return true
     }
 
-    fun update(id: Int, name: String, age: Int): Boolean {
-        return repository.update(id, User(null, name, age))
+    fun update(user: User): Boolean {
+        return repository.update(user)
     }
 }
