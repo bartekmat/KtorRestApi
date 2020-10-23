@@ -50,6 +50,8 @@ dependencies {
 
     //h2 in memory db
     implementation("com.h2database:h2:1.4.199")
+    implementation("org.postgresql:postgresql:42.2.2")
+
 
     // Koin for Kotlin apps
     implementation ("org.koin:koin-ktor:$koin_version")

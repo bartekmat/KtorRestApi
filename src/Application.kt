@@ -1,6 +1,7 @@
 package com.gruzini
 
 import com.gruzini.database.H2DatabaseConfigurer
+import com.gruzini.database.PostGresDatabaseConfigurer
 import com.gruzini.database.UserGraphSchema
 import com.gruzini.database.initializeData
 import com.gruzini.modules.routingModule
@@ -12,7 +13,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 fun Application.app() {
     //set up beans
-    val db = H2DatabaseConfigurer().configure()
+    val db = PostGresDatabaseConfigurer().configure()
     val userService = UserService(UserRepository(db))
     val userSchema = UserGraphSchema(userService)
 
