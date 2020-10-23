@@ -7,6 +7,7 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun initializeData(db: Database) {
+    transaction(db) { SchemaUtils.drop(Users) }
     transaction(db) {
         SchemaUtils.create(Users)
 

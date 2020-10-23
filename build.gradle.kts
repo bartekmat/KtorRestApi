@@ -49,8 +49,12 @@ dependencies {
     implementation("com.apurebase:kgraphql:$KGraphQLVersion")
 
     //h2 in memory db
-    implementation("com.h2database:h2:1.4.199")
+    //implementation("com.h2database:h2:1.4.199")
+    //postgres db
     implementation("org.postgresql:postgresql:42.2.2")
+
+    //hikkari connection pool
+    implementation ("com.zaxxer:HikariCP:3.4.2")
 
 
     // Koin for Kotlin apps
