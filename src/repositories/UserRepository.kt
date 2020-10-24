@@ -32,8 +32,8 @@ class UserRepository(private val db : Database) : IUserRepository {
     override fun update(entity: User): Boolean {
         transaction(db) {
             Users.update({Users.id eq entity.id!!}){
-                it[Users.name] = entity.name
-                it[Users.password] = entity.password
+                it[name] = entity.name
+                it[password] = entity.password
             }
         }
         return true

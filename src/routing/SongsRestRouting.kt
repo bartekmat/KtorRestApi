@@ -22,8 +22,8 @@ fun Route.rest(service: SongService) {
             }
             post("/") {
                 val receivedSong = call.receive<Song>()
-                val savedUser = service.save(receivedSong)
-                call.respond(savedUser)
+                val savedSong = service.save(receivedSong)
+                call.respond(savedSong)
             }
         }
     }
