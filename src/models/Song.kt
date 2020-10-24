@@ -3,7 +3,7 @@ package com.gruzini.models
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
 
-data class Song(val id: Int?, val title: String, val artist: String, val link: String) : Entity
+data class Song(val id: Int?, val title: String, val artist: String, val link: String) : Entity(id)
 
 object Songs : Table() {
 

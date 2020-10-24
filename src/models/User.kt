@@ -3,7 +3,7 @@ package com.gruzini.models
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
 
-data class User(val id: Int? = null, val name: String, val password: String) : Entity
+data class User(val id: Int? = null, val name: String, val password: String) : Entity(id)
 
 object Users : Table() {
 

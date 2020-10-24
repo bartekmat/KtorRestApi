@@ -1,9 +1,9 @@
 package com.gruzini.authentication
 
-import com.gruzini.services.UserService
+import com.gruzini.repositories.UserRepository
 import io.ktor.auth.jwt.*
 
-class CredentialValidator (private val userService: UserService) {
+class CredentialValidator(private val repository: UserRepository) {
     fun validate(cred: JWTCredential): JWTPrincipal? {
         return if (userExists(cred) && passwordIsCorrect(cred)) {
             JWTPrincipal(cred.payload)
@@ -11,12 +11,16 @@ class CredentialValidator (private val userService: UserService) {
             null
         }
     }
-    private fun userExists(jwtCredential: JWTCredential) =
-        userService.userByLoginExists(getUsername(jwtCredential))
 
-    private fun passwordIsCorrect(jwtCredential: JWTCredential): Boolean =
-        userService.passwordIsCorrect(password = getPassword(jwtCredential), username = getUsername(jwtCredential))
+    private fun userExists(jwtCredential: JWTCredential): Boolean {
+        val user = repository.fetchByUsername(getUsername(jwtCredential))
+        return user != null
+    }
 
+    private fun passwordIsCorrect(jwtCredential: JWTCredential): Boolean {
+        val user = repository.fetchByUsername(getUsername(jwtCredential))!!
+        return getPassword(jwtCredential) == user.password
+    }
 
     private fun getPassword(jwtCredential: JWTCredential): String {
         val password = jwtCredential.payload.getClaim("password").asString()!!

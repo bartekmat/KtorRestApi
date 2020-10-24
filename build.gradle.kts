@@ -30,6 +30,7 @@ dependencies {
 
     //use the kotlin jdk8 standard library
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
 
     //use ktor engine with netty embedded server
     implementation("io.ktor:ktor-server-core:$ktor_version")

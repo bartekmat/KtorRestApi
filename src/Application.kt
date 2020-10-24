@@ -4,15 +4,14 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.gruzini.authentication.CredentialValidator
 import com.gruzini.config.getJWTConfig
-import com.gruzini.database.H2DatabaseConfigurer
 import com.gruzini.database.SongGraphSchema
+import com.gruzini.database.H2DatabaseConfigurer
 import com.gruzini.repositories.SongRepository
 import com.gruzini.repositories.UserRepository
 import com.gruzini.routing.graph
 import com.gruzini.routing.login
 import com.gruzini.routing.rest
 import com.gruzini.services.SongService
-import com.gruzini.services.UserService
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.auth.jwt.*
@@ -26,10 +25,11 @@ fun Application.app() {
     //set up beans
     val databaseConfigurer = H2DatabaseConfigurer()
     val db = databaseConfigurer.initializeDatabase()
-    val userService = UserService(UserRepository(db))
-    val songService = SongService(SongRepository(db))
-    val userSchema = SongGraphSchema(songService)
-    val credentialValidator = CredentialValidator(userService)
+    val userRepository = UserRepository(db)
+    val songRepository = SongRepository(db)
+    val songService = SongService(songRepository)
+    val songSchema = SongGraphSchema(songService).getSchema()
+    val credentialValidator = CredentialValidator(userRepository)
 
     val jwtConfig = getJWTConfig(environment)
     println("jwtConfig = $jwtConfig")
@@ -42,18 +42,20 @@ fun Application.app() {
 
     install(Authentication) {
         jwt {
-            verifier(JWT.require(Algorithm.HMAC256(jwtConfig.secretKey))
-                .withIssuer(jwtConfig.issuer)
-                .build())
-            validate {
-                jwtCredential -> credentialValidator.validate(jwtCredential)
+            verifier(
+                JWT.require(Algorithm.HMAC256(jwtConfig.secretKey))
+                    .withIssuer(jwtConfig.issuer)
+                    .build()
+            )
+            validate { jwtCredential ->
+                credentialValidator.validate(jwtCredential)
             }
         }
     }
 
     install(Routing) {
         login(jwtConfig)
-        rest(songService)
-        graph(userSchema.getSchema())
+        rest("songs", songService)
+        graph(songSchema)
     }
 }

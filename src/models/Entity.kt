@@ -1,4 +1,4 @@
 package com.gruzini.models
 
-interface Entity {
+abstract class Entity(private val id: Int?) {
 }
