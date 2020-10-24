@@ -16,17 +16,17 @@ class H2DatabaseConfigurer : DatabaseConfigurer {
             Users.insert {
                 it[id] = 1
                 it[name] = "Tim Buchalka"
-                it[age] = 55
+                it[password] = "123"
             }
             Users.insert {
                 it[id] = 2
-                it[name] = "Michal Bojanowski"
-                it[age] = 31
+                it[name] = "Hadi Hariri"
+                it[password] = "123"
             }
             Users.insert {
                 it[id] = 3
-                it[name] = "Vladimir Putin"
-                it[age] = 68
+                it[name] = "Steve Jobs"
+                it[password] = "123"
             }
         }
     }

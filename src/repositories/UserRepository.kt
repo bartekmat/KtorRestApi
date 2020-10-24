@@ -6,6 +6,11 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class UserRepository(private val db : Database) : IUserRepository {
+
+    override fun fetchByUsername(username: String): User? {
+        return transaction(db) { Users.select { Users.name.eq(username) }.firstOrNull()?.toUser() }
+    }
+
     override fun fetchAll(): List<User> {
         return transaction(db) { Users.selectAll().map { it.toUser() } }
     }
@@ -18,7 +23,7 @@ class UserRepository(private val db : Database) : IUserRepository {
         transaction(db) {
             Users.insert {
                 it[name] = receivedUser.name
-                it[age] = receivedUser.age
+                it[password] = receivedUser.password
             }
         }
         return true
@@ -28,7 +33,7 @@ class UserRepository(private val db : Database) : IUserRepository {
         transaction(db) {
             Users.update({Users.id eq entity.id!!}){
                 it[Users.name] = entity.name
-                it[Users.age] = entity.age
+                it[Users.password] = entity.password
             }
         }
         return true

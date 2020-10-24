@@ -41,6 +41,10 @@ dependencies {
     //use jackson as json
     implementation("io.ktor:ktor-jackson:$ktor_version")
 
+    //user ktor authentication jwt
+    implementation ("io.ktor:ktor-auth-jwt:$ktor_version")
+
+
     //use exposed as db
     implementation("org.jetbrains.exposed", "exposed-core", "0.24.1")
     implementation("org.jetbrains.exposed", "exposed-jdbc", "0.24.1")
@@ -49,7 +53,7 @@ dependencies {
     implementation("com.apurebase:kgraphql:$KGraphQLVersion")
 
     //h2 in memory db
-    //implementation("com.h2database:h2:1.4.199")
+    implementation("com.h2database:h2:1.4.199")
     //postgres db
     implementation("org.postgresql:postgresql:42.2.2")
 

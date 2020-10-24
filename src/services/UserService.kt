@@ -22,4 +22,14 @@ class UserService(private val repository: IUserRepository) {
     fun update(user: User): Boolean {
         return repository.update(user)
     }
+
+    fun userByLoginExists(username: String): Boolean {
+        val user = repository.fetchByUsername(username)
+        return user != null
+    }
+
+    fun passwordIsCorrect(username: String, password: String): Boolean {
+        val user = repository.fetchByUsername(username)!!
+        return password == user.password
+    }
 }
