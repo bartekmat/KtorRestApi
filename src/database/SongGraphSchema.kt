@@ -3,10 +3,10 @@ package com.gruzini.database
 import com.apurebase.kgraphql.KGraphQL
 import com.apurebase.kgraphql.schema.Schema
 import com.gruzini.models.Song
-import com.gruzini.services.SongService
+import com.gruzini.services.ISongService
 
-class SongGraphSchema(private val service: SongService) {
-    fun getSchema(): Schema = KGraphQL.schema {
+class SongGraphSchema(private val service: ISongService) : ISchema {
+    override fun get(): Schema = KGraphQL.schema {
         configure {
             useDefaultPrettyPrinter = true
         }

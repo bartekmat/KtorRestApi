@@ -1,9 +1,9 @@
 package com.gruzini.authentication
 
-import com.gruzini.repositories.UserRepository
+import com.gruzini.repositories.IUserRepository
 import io.ktor.auth.jwt.*
 
-class CredentialValidator(private val repository: UserRepository) {
+class CredentialValidator(private val repository: IUserRepository) {
     fun validate(cred: JWTCredential): JWTPrincipal? {
         return if (userExists(cred) && passwordIsCorrect(cred)) {
             JWTPrincipal(cred.payload)

@@ -62,9 +62,13 @@ dependencies {
     implementation ("com.zaxxer:HikariCP:3.4.2")
 
 
-    // Koin for Kotlin apps
-    implementation ("org.koin:koin-ktor:$koin_version")
-    // Testing
+    // Koin for Kotlin
+    implementation ("org.koin:koin-core:$koin_version")
+
+    // Koin Extended & experimental features
+    implementation ("org.koin:koin-core-ext:$koin_version")
+
+    // Koin for Unit tests
     testImplementation ("org.koin:koin-test:$koin_version")
 
     //use these test libraries - ktor for server request tests, junit for running tests and assertions

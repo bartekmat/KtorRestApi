@@ -7,10 +7,20 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 
-class H2DatabaseConfigurer : DatabaseConfigurer {
+class H2Database : IDatabase {
+    private val database: Database
+    init {
+        database = database()
+        initializeDatabase()
+    }
 
-    override fun initializeDatabase(): Database {
-        val database = database()
+    override fun get(): Database {
+        return database
+    }
+
+    private fun database() = Database.connect("jdbc:h2:mem:regular;DB_CLOSE_DELAY=-1", "org.h2.Driver")
+
+    private fun initializeDatabase() {
         transaction { SchemaUtils.drop(Users) }
         transaction {
             SchemaUtils.create(Users)
@@ -53,8 +63,5 @@ class H2DatabaseConfigurer : DatabaseConfigurer {
                 it[link] = "https://www.youtube.com/watch?v=kd9TlGDZGkI&ab_channel=DireStraitsVEVO"
             }
         }
-        return database
     }
-
-    private fun database() = Database.connect("jdbc:h2:mem:regular;DB_CLOSE_DELAY=-1", "org.h2.Driver")
 }

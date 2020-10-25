@@ -1,26 +1,27 @@
 package com.gruzini.repositories
 
+import com.gruzini.database.IDatabase
 import com.gruzini.models.Song
 import com.gruzini.models.Songs
-import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
-class SongRepository(private val db: Database) : ISongRepository {
+class SongRepository(private val IDatabase: IDatabase) : ISongRepository {
+
     override fun fetchAll(): List<Song> {
-        return transaction(db) {
+        return transaction(IDatabase.get()) {
             Songs.selectAll().map { it.toSong() }
         }
     }
 
     override fun fetch(id: Int): Song? {
-        return transaction(db) { Songs.select { Songs.id.eq(id) }.firstOrNull()?.toSong() }
+        return transaction(IDatabase.get()) { Songs.select { Songs.id.eq(id) }.firstOrNull()?.toSong() }
     }
 
     override fun create(entity: Song): Boolean {
-        transaction(db) {
+        transaction(IDatabase.get()) {
             Songs.insert {
                 it[title] = entity.title
                 it[artist] = entity.artist

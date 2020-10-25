@@ -4,7 +4,7 @@ import com.gruzini.models.Song
 import com.gruzini.repositories.ISongRepository
 import io.ktor.features.*
 
-class SongService(private val repository: ISongRepository) : Service<Song> {
+class SongService(private val repository: ISongRepository) : ISongService {
     override fun getAll(): List<Song> {
         return repository.fetchAll()
     }

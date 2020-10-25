@@ -8,10 +8,17 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 
-class PostGresDatabaseConfigurer : DatabaseConfigurer {
+class PostGresDatabase : IDatabase {
+    private val database: Database
+    init {
+        database = database()
+        initializeDatabase()
+    }
+    override fun get(): Database {
+        return database
+    }
 
-    override fun initializeDatabase() : Database {
-        val database = database()
+    private fun initializeDatabase() {
         transaction {
             //drop tables
             SchemaUtils.drop(Users)
@@ -20,7 +27,6 @@ class PostGresDatabaseConfigurer : DatabaseConfigurer {
             SchemaUtils.create(Users)
             SchemaUtils.create(Songs)
         }
-        return database
     }
 
     private fun database(): Database {

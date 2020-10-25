@@ -4,13 +4,18 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.gruzini.authentication.CredentialValidator
 import com.gruzini.config.getJWTConfig
+import com.gruzini.database.H2Database
+import com.gruzini.database.IDatabase
+import com.gruzini.database.ISchema
 import com.gruzini.database.SongGraphSchema
-import com.gruzini.database.H2DatabaseConfigurer
+import com.gruzini.repositories.ISongRepository
+import com.gruzini.repositories.IUserRepository
 import com.gruzini.repositories.SongRepository
 import com.gruzini.repositories.UserRepository
 import com.gruzini.routing.graph
 import com.gruzini.routing.login
 import com.gruzini.routing.rest
+import com.gruzini.services.ISongService
 import com.gruzini.services.SongService
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -18,44 +23,30 @@ import io.ktor.auth.jwt.*
 import io.ktor.features.*
 import io.ktor.jackson.*
 import io.ktor.routing.*
+import org.koin.core.KoinComponent
+import org.koin.core.context.startKoin
+import org.koin.core.inject
+import org.koin.dsl.module
 
-fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-fun Application.app() {
-    //set up beans
-    val databaseConfigurer = H2DatabaseConfigurer()
-    val db = databaseConfigurer.initializeDatabase()
-    val userRepository = UserRepository(db)
-    val songRepository = SongRepository(db)
-    val songService = SongService(songRepository)
-    val songSchema = SongGraphSchema(songService).getSchema()
-    val credentialValidator = CredentialValidator(userRepository)
-
-    val jwtConfig = getJWTConfig(environment)
-    println("jwtConfig = $jwtConfig")
-
-    install(ContentNegotiation) {
-        jackson {
-            //here i can configure jackson mapper
-        }
+fun main(args: Array<String>): Unit {
+    val appModule = module {
+        single<IDatabase> { H2Database() }
+        single<IUserRepository> { UserRepository(get()) }
+        single<ISongRepository> { SongRepository(get()) }
+        single<ISongService> { SongService(get()) }
+        single<ISchema> { SongGraphSchema(get()) }
+        single { CredentialValidator(get()) }
     }
 
-    install(Authentication) {
-        jwt {
-            verifier(
-                JWT.require(Algorithm.HMAC256(jwtConfig.secretKey))
-                    .withIssuer(jwtConfig.issuer)
-                    .build()
-            )
-            validate { jwtCredential ->
-                credentialValidator.validate(jwtCredential)
-            }
-        }
+    startKoin {
+        modules(appModule)
     }
+    return io.ktor.server.netty.EngineMain.main(args)
+}
 
-    install(Routing) {
-        login(jwtConfig)
-        rest("songs", songService)
-        graph(songSchema)
-    }
+class Context : KoinComponent {
+    val credentialValidator by inject<CredentialValidator>()
+    val songSchema by inject<ISchema>()
+    val songService by inject<ISongService>()
 }

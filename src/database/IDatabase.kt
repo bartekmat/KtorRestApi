@@ -2,6 +2,6 @@ package com.gruzini.database
 
 import org.jetbrains.exposed.sql.Database
 
-interface DatabaseConfigurer {
-    fun initializeDatabase(): Database
+interface IDatabase {
+    fun get(): Database
 }
